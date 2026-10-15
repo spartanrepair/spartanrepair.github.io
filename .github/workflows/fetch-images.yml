@@ -1,0 +1,38 @@
+name: fetch-images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/fetch-images.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download images
+        run: |
+          curl -fL -o img-hero-tabling.jpg "https://www.figma.com/api/mcp/asset/230ae807-e812-49be-95c8-c46cc7f3d83b"
+          curl -fL -o img-seniors-scam-slide.jpg "https://www.figma.com/api/mcp/asset/fff09bf4-aed5-449b-ba38-8ddecc8f4652"
+          curl -fL -o img-seniors-presenting.jpg "https://www.figma.com/api/mcp/asset/aaf722bd-e9b5-4015-95a9-fc95c65f44f1"
+          curl -fL -o img-team-tabling.jpg "https://www.figma.com/api/mcp/asset/e45a7eb1-7ef4-4936-8fdb-107143d55e69"
+          curl -fL -o img-tabling-tennis.jpg "https://www.figma.com/api/mcp/asset/4f6e8798-ce96-47d5-b333-749f9a3823c2"
+          curl -fL -o img-logo-320.png "https://www.figma.com/api/mcp/asset/e2bedb89-edc2-47db-8b20-1610a5cba7fb"
+          curl -fL -o img-logo-800.png "https://www.figma.com/api/mcp/asset/d736687b-4283-4249-8eed-54cb65ca3923"
+          ls -l img-*
+      - name: Commit images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img-*
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Add site images"
+            git push
+          fi
